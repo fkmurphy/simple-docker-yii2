@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   yii2-app:
     build:
       dockerfile: Dockerfile
@@ -10,7 +9,7 @@ services:
       - PHP_ENABLE_XDEBUG
       - TEST_RUNTIME_PATH=/tmp/runtime
     depends_on:
-      - postgresql
+      - mysql
     ports:
       - "2080:80"
       - "2081:81"
@@ -19,15 +18,17 @@ services:
       - ./app:/app:delegated
       # Composer cache
       - ./.composer-docker/cache:/root/.composer/cache:delegated
-  postgresql:
-    image: postgres:12
+  mysql:
+    image: mysql:5.7
     restart: always
-    container_name: "yii2-postgresql"
+    container_name: "yii2-mysql"
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      - POSTGRES_USER=iapl
-      - POSTGRES_PASSWORD=iapl
-      - POSTGRES_DB=iapl
+      - MYSQL_USER=iapl
+      - MYSQL_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=iapl
     ports:
-      - "54320:5432"
+      - "33060:3306"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./mysql_data:/var/lib/mysql

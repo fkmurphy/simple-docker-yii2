@@ -17,8 +17,8 @@ RUN  apk --update add apache2 php7-apache2 \
 	#necesarios para instalar composer
 	php7-json php7-phar bash bash-completion \
 	# modulo para mysql
-	#php7-pdo_mysql mysql-client 
-	php7-pdo_pgsql postgresql-client
+	php7-pdo_mysql mysql-client 
+	#php7-pdo_pgsql postgresql-client
 	 
 
 COPY image-files/ /
