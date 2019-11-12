@@ -1,0 +1,5 @@
+/app
+/postgres_data
+/iapl_2018-10-12.sql
+/.composer-docker
+/.env
