@@ -11,8 +11,8 @@ services:
     depends_on:
       - mysql
     ports:
-      - "2080:80"
-      - "2081:81"
+      - "2080:9880"
+      - "2081:9881"
     volumes:
       # Application testing
       - ./app:/app:delegated
@@ -20,13 +20,13 @@ services:
       - ./.composer-docker/cache:/root/.composer/cache:delegated
   mysql:
     image: mysql:5.7
-    restart: always
+    #restart: always
     container_name: "yii2-mysql"
     command: --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_USER=iapl
-      - MYSQL_PASSWORD=
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_PASSWORD=iapl
+      - MYSQL_ROOT_PASSWORD=iapl
       - MYSQL_DATABASE=iapl
     ports:
       - "33060:3306"

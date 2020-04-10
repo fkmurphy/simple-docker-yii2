@@ -19,36 +19,40 @@ RUN  apk --update add apache2 php7-apache2 \
 	# modulo para mysql
 	php7-pdo_mysql mysql-client 
 	#php7-pdo_pgsql postgresql-client
-	 
 
 COPY image-files/ /
-
 RUN chmod 700 \
 	/usr/local/bin/docker-php-entrypoint \
         /usr/local/bin/composer
-
 RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer.phar \
-        --install-dir=/usr/local/bin && composer clear-cache
+        --install-dir=/usr/local/bin 
 
 ENV PHP_ENABLE_XDEBUG=0 \
     PATH=/app:/app/vendor/bin:/root/.composer/vendor/bin:$PATH \
     TERM=linux \
     VERSION_PRESTISSIMO_PLUGIN=^0.3.7 \
-    COMPOSER_ALLOW_SUPERUSER=1
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    APACHE_LOG_DIR=/var/log/apache2
 
 # Install composer plugins / acelerador prestissimo
-RUN composer global require --optimize-autoloader \
-        "hirak/prestissimo:${VERSION_PRESTISSIMO_PLUGIN}"  && \
-	composer global dumpautoload --optimize && \
-	composer clear-cache
+#RUN composer global require --optimize-autoloader \
+#        "hirak/prestissimo:${VERSION_PRESTISSIMO_PLUGIN}"  && \
+#	composer global dumpautoload --optimize && \
+#	composer clear-cache
 # Application environment
 WORKDIR /app	
 
-RUN mkdir /bootstrap && chown apache.apache /app && chmod 755 /app
+RUN mkdir /bootstrap && chown apache.apache /app && chmod 755 /app \
+	&& chown -R apache.apache /var/log/apache2
 ADD start.sh /bootstrap/start.sh
-RUN chmod +x /bootstrap/start.sh
+RUN chmod +x /bootstrap/start.sh 
 
-EXPOSE 80 81
+RUN ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stderr /var/log/apache2/error.log
+
+EXPOSE 9880 9881
+
+#USER apache
 
 ENTRYPOINT ["/bootstrap/start.sh"]

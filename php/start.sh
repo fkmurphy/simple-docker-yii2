@@ -7,5 +7,6 @@ if [ "$CONTAINER_TIMEZONE" ]; then
         echo "Cambió zona horaria del contenedor: $CONTAINER_TIMEZONE"
 fi
 
+
 httpd -D FOREGROUND
 
